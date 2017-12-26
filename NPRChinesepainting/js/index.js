@@ -1,7 +1,7 @@
 (function(){
 	
     var stats = new Stats();
-   
+    var isReady = false;
 
 	var gl;
 	var view,persp,model,inverse;
@@ -622,7 +622,7 @@
         var edgeidx = 0;
 
         // //loader.load( 'http://127.0.0.1:8089/OBJ/CornellBox-Empty-CO.obj', 'http://127.0.0.1:8089/OBJ/CornellBox-Empty-CO.mtl',
-        loader.load( 'http://localhost:288/webglDeferredShader/obj/bunny.obj', function ( event ) {
+        loader.load( 'obj/bunny.obj', function ( event ) {
             var object = event;
 
             console.log("children " + object.children.length);
@@ -792,7 +792,8 @@
                 iLens.push(meshIndex.length);
  
                 console.log("mehsnormals len " + meshNormals.length / 3);
-                 updateFaceInfo(meshfacenormals,models[0],meshisFrontFace,meshedgefaces,meshedges,meshVertices);       
+                 updateFaceInfo(meshfacenormals,models[0],meshisFrontFace,meshedgefaces,meshedges,meshVertices);    
+                 isReady = true;   
               }
             } );
         });
@@ -1496,6 +1497,7 @@
 
  	function tick() {
         requestAnimFrame(tick);
+        if(isReady)
         drawScene();    
         
         stats.update();

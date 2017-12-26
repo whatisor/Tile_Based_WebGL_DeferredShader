@@ -3,38 +3,6 @@
 <meta charset ="utf-8">
 <meta http-equiv="X-UA-Compatible" content="chrome=1"> 
 <title>Deferred Shader</title>
-</head>
-
-<body>
-
-<div>
- 	<input type="checkbox" id="diffuse" name = "a" checked/>Display <span style = "color:red">Diffuse</span> Pass	
- 	<input type="checkbox" id="silhouette" name = "a"  />Display<span style = "color:red">Stroke</span> 
- 	<input type="checkbox" id="ink" name = "a"  />Display<span style = "color:red"> ink diffusion</span> 
- 	<input type="checkbox" id="inkSil" name = "a"  />Display<span style = "color:red"> Silhouette and Interior</span> 
-    <input type="checkbox" id="normal"  name = "a" />Display <span style = "color:red">Normal </span> 
-    <input type="checkbox" id="color"  name = "a" />Display <span style = "color:red">Color Texture</span>	
-    <input type="checkbox" id="position" name = "a" />Display Screen Space <span style = "color:red">Position</span>  
-    <input type="checkbox" id="depth" name = "a"  />Display<span style = "color:red">Depth</span>  Pass
-    <input type="checkbox" id="depth2" name = "a"  />Display<span style = "color:red"> manually calculated Depth</span>  Pass
-    
-</div>
-
-<canvas id="canvas" style="border: none;" width="1024" height="768" tabindex="1"></canvas>
-
-<script type="text/javascript" src ="js/jquery-1.10.2.min.js"></script>
-<script type = "text/javascript" >
-	$(':checkbox').on('change',function(){
-	 var th = $(this), name = th.prop('name'); 
-	 if(th.is(':checked')){
-	 		//console.log(name);
-	     $(':checkbox[name="'  + name + '"]').not($(this)).prop('checked',false);   
-	  }
-});
-
-</script>
-
-<script type = "text/javascript" src="js/gl-matrix.js"></script>
 
 <script type="x-shader/x-fragment" id ="strokefs">
 	precision mediump float;
@@ -49,7 +17,7 @@
 
 		int numofColoredPixel = 0;
 		int hasPixel = 0;
-		if(equal(color,vec4(1.0,1.0,1.0,1.0)) == true)
+		if(equal(color,vec4(1.0,1.0,1.0,1.0)) == bvec4(true))
 		{
 			vec2 pixelIndex = vec2(fs_Texcoord.x * (float(u_viewportWidth) - 1.0),fs_Texcoord.y * (float(u_viewportHeight) - 1.0));	
 			for(int i = -1; i<=1 ;++i)
@@ -61,7 +29,7 @@
 					vec2 newpixelIdx = pixelIndex + vec2(i,j);
 					vec4 newColor = texture2D(u_SilColorSampler,vec2(newpixelIdx.x / (float(u_viewportWidth)-1.0),
 														newpixelIdx.y / (float(u_viewportHeight)-1.0)));
-					if(equal(newColor,vec4(0.0,0.0,0.0,1.0)) == true)
+					if(equal(newColor,vec4(0.0,0.0,0.0,1.0)) == bvec4(true))
 					{
 						numofColoredPixel ++;
 					}
@@ -382,7 +350,7 @@
 		{			
 			vec3 spattercolor = MedianFilter(u_SpatterSampler);	
 			spattercolor = colorEnhance(0.2,0.98,spattercolor);	
-			if(equal(texture2D(u_StrokeSampler,fs_Texcoord),vec4(1.0,1.0,1.0,1.0))== false)
+			if(equal(texture2D(u_StrokeSampler,fs_Texcoord),vec4(1.0,1.0,1.0,1.0))== bvec4(false))
 			{
 				vec3 strokeColor =  texture2D(u_StrokeSampler,fs_Texcoord).rgb;
 				//strokeColor = MedianFilter(u_StrokeSampler);
@@ -559,6 +527,39 @@
 		}
 	}
 </script>
+
+</head>
+
+<body>
+
+<div>
+ 	<input type="checkbox" id="diffuse" name = "a" checked/>Display <span style = "color:red">Diffuse</span> Pass	
+ 	<input type="checkbox" id="silhouette" name = "a"  />Display<span style = "color:red">Stroke</span> 
+ 	<input type="checkbox" id="ink" name = "a"  />Display<span style = "color:red"> ink diffusion</span> 
+ 	<input type="checkbox" id="inkSil" name = "a"  />Display<span style = "color:red"> Silhouette and Interior</span> 
+    <input type="checkbox" id="normal"  name = "a" />Display <span style = "color:red">Normal </span> 
+    <input type="checkbox" id="color"  name = "a" />Display <span style = "color:red">Color Texture</span>	
+    <input type="checkbox" id="position" name = "a" />Display Screen Space <span style = "color:red">Position</span>  
+    <input type="checkbox" id="depth" name = "a"  />Display<span style = "color:red">Depth</span>  Pass
+    <input type="checkbox" id="depth2" name = "a"  />Display<span style = "color:red"> manually calculated Depth</span>  Pass
+    
+</div>
+
+<canvas id="canvas" style="border: none;" width="1024" height="768" tabindex="1"></canvas>
+
+<script type="text/javascript" src ="js/jquery-1.10.2.min.js"></script>
+<script type = "text/javascript" >
+	$(':checkbox').on('change',function(){
+	 var th = $(this), name = th.prop('name'); 
+	 if(th.is(':checked')){
+	 		//console.log(name);
+	     $(':checkbox[name="'  + name + '"]').not($(this)).prop('checked',false);   
+	  }
+});
+
+</script>
+
+<script type = "text/javascript" src="js/gl-matrix.js"></script>
 
 <script src="js/webGLUtility.js"></script> 
 <script src="js/Stats.js"></script>
